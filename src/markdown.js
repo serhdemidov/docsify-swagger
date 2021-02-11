@@ -35,7 +35,7 @@ export function paragraphTip(text) {
 }
 
 export function monospace(text) {
-    return "`" + text + "`\n";
+    return `${text}\n`;
 }
 
 export function strikethrough(text) {

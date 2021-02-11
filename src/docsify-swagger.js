@@ -13,6 +13,7 @@ let options = {
     "en": {
       request: "Request parameters",
       response: "Response parameters",
+      enableResponse: true,
       name: "Name",
       type: "Type",
       required: "Required",
@@ -22,6 +23,7 @@ let options = {
     "zh-cn": {
       request: "请求参数",
       response: "响应参数",
+      enableResponse: true,
       name: "名称",
       type: "类型",
       required: "是否必传",
@@ -140,7 +142,7 @@ export function install(hook, vm) {
       let api = apis[index];
       let tag = api.tag;
       let deprecated = api.deprecated;
-      let markdown = markdownMap.get(tag);
+      let markdown = markdownMap.get(tag) || '';
       let summary = api.summary;
       if (deprecated) {
         summary = strikethrough(summary);
@@ -178,33 +180,36 @@ export function install(hook, vm) {
       }
 
       /* add response parameters */
-      let response = api.response;
-      markdown += h4(i18n.response);
-      if (response.length == 0) {
-        markdown += `${i18n.none}\n`;
-      } else {
-        let nestedParams = [];
-        let tableData = [];
-        for (let index = 0; index < response.length; index++) {
-          let param = response[index];
-          tableData.push([
-            param.name,
-            param.type,
-            param.required,
-            param.description
-          ]);
-
-          let refParam = param.refParam;
-          if (refParam && refParam.length != 0) {
-            nestedParams.push({
-              name: param.refType,
-              ref: refParam
-            });
+      if (i18n.enableResponse) {
+        let response = api.response;
+        markdown += h4(i18n.response);
+        if (response.length == 0) {
+          markdown += `${i18n.none}\n`;
+        } else {
+          let nestedParams = [];
+          let tableData = [];
+          for (let index = 0; index < response.length; index++) {
+            let param = response[index];
+            tableData.push([
+              param.name,
+              param.type,
+              param.required,
+              param.description
+            ]);
+  
+            let refParam = param.refParam;
+            if (refParam && refParam.length != 0) {
+              nestedParams.push({
+                name: param.refType,
+                ref: refParam
+              });
+            }
           }
+          markdown += table([i18n.name, i18n.type, i18n.required, i18n.description], tableData)
+            + handleNestedParams(nestedParams);
         }
-        markdown += table([i18n.name, i18n.type, i18n.required, i18n.description], tableData)
-          + handleNestedParams(nestedParams);
       }
+      
 
       markdownMap.set(tag, markdown);
     }

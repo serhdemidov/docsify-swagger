@@ -34,7 +34,6 @@ export function parse(docJson) {
             });
         }
     }
-
     return fixedSwaggerJson;
 }
 
