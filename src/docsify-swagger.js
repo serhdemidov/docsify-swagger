@@ -123,7 +123,11 @@ export function install(hook, vm) {
     if (info.title) {
       swaggerMarkdown += h1(info.title);
     }
-    swaggerMarkdown += paragraph(`${info.description}\n`);
+
+    if(info.description) {
+      swaggerMarkdown += paragraph(`${info.description}\n`);
+    }
+    
     if (info.version) {
       swaggerMarkdown += bullet(`Version: ${info.version}\n`);
     }
